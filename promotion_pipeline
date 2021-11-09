@@ -1,0 +1,37 @@
+Pipeline has STRING Parameter
+Name: PROJECTVERSION
+Value: got from manual input
+
+
+
+
+
+pipeline {
+    agent { label 'mstrnode' }
+
+    environment {
+        // Nexus Creds for docker
+        NEXUS_DOCKER_CREDENTIAL_ID = credentials('nexus-credentials')
+        // Nexus docker release repo
+        NEXUS_DOCKER_RELEASE_URL = "31.41.156.90:8124"
+    }
+    
+    stages {
+        stage('Promotion') {
+            steps {
+                echo "Parameter is ${PROJECTVERSION}"
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'master']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/evileyedlynx/larn.git']]])
+                sh 'ls -al'
+                sh 'mvn clean'
+                sh 'mvn release:clean'
+                sh "mvn --batch-mode release:prepare -DreleaseVersion=${PROJECTVERSION} -Dresume=false"
+                sh 'mvn release:perform'
+                sh 'ls -al target/'
+                sh "docker login -u ${NEXUS_DOCKER_CREDENTIAL_ID_USR} -p ${NEXUS_DOCKER_CREDENTIAL_ID_PSW} http://${NEXUS_DOCKER_RELEASE_URL}/"
+                sh "docker build -t petclinic:${PROJECTVERSION} ."
+                sh "docker tag  petclinic:${PROJECTVERSION}  ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${PROJECTVERSION}"
+                sh "docker push ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${PROJECTVERSION}"
+            }
+        }
+    }
+}
