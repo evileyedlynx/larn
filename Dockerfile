@@ -4,6 +4,6 @@ WORKDIR /root/
 
 COPY target/*.jar ./petclinic.jar
 
-EXPOSE 80/tcp
+EXPOSE 8080/tcp
 
 CMD ["java", "-jar", "./petclinic.jar"]
