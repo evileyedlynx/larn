@@ -1,0 +1,30 @@
+Pipeline has STRING Parameter
+Name: ARTIFACTVERSION
+Value: got from parent pipeline as ${pom.version}
+
+
+
+
+pipeline {
+    agent { label 'slvnode' }
+
+    environment {
+        // Nexus Creds for docker
+        NEXUS_DOCKER_CREDENTIAL_ID = credentials('nexus-credentials')
+        // Nexus docker snapshot repo
+        NEXUS_DOCKER_SNAPSHOT_URL = "31.41.156.90:8081/repository/mydocreg_snap"
+    }
+    
+    stages {
+        stage('SlaveStage') {
+            steps {
+                echo "Parameter is ${ARTIFACTVERSION}"
+                sh "docker stop petclinic || echo 'No running petclinic container'"
+                sh "docker rm petclinic || echo 'No existing petclinic container'"
+                sh "docker login -u ${NEXUS_DOCKER_CREDENTIAL_ID_USR} -p ${NEXUS_DOCKER_CREDENTIAL_ID_PSW} http://${NEXUS_DOCKER_SNAPSHOT_URL}/"
+                sh "docker pull ${NEXUS_DOCKER_SNAPSHOT_URL}/petclinic:${ARTIFACTVERSION}"
+                sh "docker run --name petclinic -d -p 8080:8080 ${NEXUS_DOCKER_SNAPSHOT_URL}/petclinic:${ARTIFACTVERSION}"
+            }
+        }
+    }
+}
