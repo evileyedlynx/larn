@@ -1,13 +1,5 @@
-Pipeline has STRING Parameter
-Name: PROJECTVERSION
-Value: got from manual input
-
-
-
-
-
 pipeline {
-    agent { label 'mstrnode' }
+    agent { label 'master' }
 
     environment {
         // Nexus Creds for docker
@@ -20,12 +12,12 @@ pipeline {
         stage('Promotion') {
             steps {
                 echo "Parameter is ${PROJECTVERSION}"
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'master']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/evileyedlynx/larn.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'master']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://git@github.com/evileyedlynx/larn.git']]])
                 sh 'ls -al'
-                sh 'mvn clean'
-                sh 'mvn release:clean'
-                sh "mvn --batch-mode release:prepare -DreleaseVersion=${PROJECTVERSION} -Dresume=false"
-                sh 'mvn release:perform'
+                sh './mvnw clean'
+                sh './mvnw release:clean'
+                sh "./mvnw --batch-mode release:prepare -DreleaseVersion=${PROJECTVERSION} -Dresume=false"
+                sh './mvnw release:perform'
                 sh 'ls -al target/'
                 sh "docker login -u ${NEXUS_DOCKER_CREDENTIAL_ID_USR} -p ${NEXUS_DOCKER_CREDENTIAL_ID_PSW} http://${NEXUS_DOCKER_RELEASE_URL}/"
                 sh "docker build -t petclinic:${PROJECTVERSION} ."
