@@ -100,4 +100,16 @@ pipeline {
         }
         
     }
+    post {
+        always {
+             script {
+                    // Read POM xml file using 'readMavenPom' step , this step 'readMavenPom' is included in: https://plugins.jenkins.io/pipeline-utility-steps
+                    pom = readMavenPom file: "pom.xml"
+                }
+            build job: 'slave',
+              parameters: [string(name: 'ARTIFACTVER', value: "${pom.version}")]
+            //  {string }ARTIFACTVERSION = "${pom.version}"
+            //  parameters: [[$class: 'StringParameterValue', name: 'ARTIFACTVERSION', value: String.valueOf(${pom.version})]]
+        }
+    }
 }
