@@ -11,18 +11,18 @@ pipeline {
     stages {
         stage('Promotion') {
             steps {
-                echo "Parameter is ${PROJECTVERSION}"
+                echo "Parameter is ${params.PROJECTVERSION}"
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: 'master']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://git@github.com/evileyedlynx/larn.git']]])
                 sh 'ls -al'
                 sh './mvnw clean'
                 sh './mvnw release:clean'
-                sh "./mvnw --batch-mode release:prepare -DreleaseVersion=${PROJECTVERSION} -Dresume=false"
+                sh "./mvnw --batch-mode release:prepare -DreleaseVersion=${params.PROJECTVERSION} -Dresume=false"
                 sh './mvnw release:perform'
                 sh 'ls -al target/'
                 sh "docker login -u ${NEXUS_DOCKER_CREDENTIAL_ID_USR} -p ${NEXUS_DOCKER_CREDENTIAL_ID_PSW} http://${NEXUS_DOCKER_RELEASE_URL}/"
                 sh "docker build -t petclinic:${PROJECTVERSION} ."
-                sh "docker tag  petclinic:${PROJECTVERSION}  ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${PROJECTVERSION}"
-                sh "docker push ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${PROJECTVERSION}"
+                sh "docker tag  petclinic:${PROJECTVERSION}  ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${params.PROJECTVERSION}"
+                sh "docker push ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${params.PROJECTVERSION}"
             }
         }
     }
