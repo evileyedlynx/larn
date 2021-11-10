@@ -20,8 +20,8 @@ pipeline {
                 sh './mvnw release:perform'
                 sh 'ls -al target/'
                 sh "docker login -u ${NEXUS_DOCKER_CREDENTIAL_ID_USR} -p ${NEXUS_DOCKER_CREDENTIAL_ID_PSW} http://${NEXUS_DOCKER_RELEASE_URL}/"
-                sh "docker build -t petclinic:${PROJECTVERSION} ."
-                sh "docker tag  petclinic:${PROJECTVERSION}  ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${params.PROJECTVERSION}"
+                sh "docker build -t petclinic:${params.PROJECTVERSION} ."
+                sh "docker tag  petclinic:${params.PROJECTVERSION}  ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${params.PROJECTVERSION}"
                 sh "docker push ${NEXUS_DOCKER_RELEASE_URL}/petclinic:${params.PROJECTVERSION}"
             }
         }
