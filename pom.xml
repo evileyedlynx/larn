@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.springframework.samples</groupId>
   <artifactId>spring-petclinic</artifactId>
-  <version>04-SNAPSHOT</version>
+  <version>04</version>
 
   
   <parent>
@@ -16,7 +16,7 @@
     <scm>
       <connection>scm:git:ssh://git@github.com/evileyedlynx/larn.git</connection>
       <developerConnection>scm:git:ssh://git@github.com/evileyedlynx/larn.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>spring-petclinic-04</tag>
     </scm>
   
   <properties>
