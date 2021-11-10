@@ -16,8 +16,8 @@
 
     <scm>
       <url>https://github.com/evileyedlynx/larn/src</url>
-      <connection>scm:git:ssh://github.com/evileyedlynx/larn.git</connection>
-      <developerConnection>scm:git:ssh://github.com/evileyedlynx/larn.git</developerConnection>
+      <connection>scm:git:ssh://git@github.com/evileyedlynx/larn.git</connection>
+      <developerConnection>scm:git:ssh://git@github.com/evileyedlynx/larn.git</developerConnection>
       <tag>HEAD</tag>
     </scm>
   
