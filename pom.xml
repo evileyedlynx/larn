@@ -16,7 +16,7 @@
   <name>petclinic</name>
 
     <scm>
-      <url>https://github.com/evileyedlynx/larn</url>
+      <url>ssh://git@github.com/evileyedlynx/larn.git</url>
       <connection>scm:git:ssh://git@github.com/evileyedlynx/larn.git</connection>
       <developerConnection>scm:git:ssh://git@github.com/evileyedlynx/larn.git</developerConnection>
       <tag>HEAD</tag>
